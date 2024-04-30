@@ -20,10 +20,12 @@ public class RestResponseModelExceptionHandler extends ResponseEntityExceptionHa
 
     @ExceptionHandler(ModelNotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ResponseEntity<ErrorMessage> categoryNotFoundException(ModelNotFoundException exception){
+    public ResponseEntity<ErrorMessage> modelNotFoundException(ModelNotFoundException exception){
         ErrorMessage message = new ErrorMessage(HttpStatus.NOT_FOUND,exception.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
     }
+
+
 
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {

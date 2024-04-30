@@ -1,6 +1,7 @@
 package com.Papeleriayvariedadshalom.app.PapeleriayVariedad.services.servicesImpl;
 
 import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.errors.ModelNotFoundException;
+import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.models.Category;
 import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.models.Rol;
 import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.repositories.RolRepository;
 import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.services.RolService;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service //Con esta anotación le indicamos a Spring, que esta clase manejará la capa de servicios
 public class RolServiceImpl implements RolService {
-//En esta clase implementamos la interfaz RolService donde se definen los métodos a  utilizar
+//En esta clase implementamos la interfaz RolService donde se definen los métodos a utilizar
 
     @Autowired //Con esta anotación manejamos la inyección de dependencias
     RolRepository rolRepository;
@@ -24,25 +25,34 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
-    public Rol findRolById(int id) throws ModelNotFoundException {
+    public Rol findRolById(Long id) throws ModelNotFoundException {
         Optional<Rol> rol = rolRepository.findById(id);
-        if (!rol.isPresent()){
+        if (rol.isEmpty()){
             throw new ModelNotFoundException("Rol is not available");
         }
         return rol.get();
     }
 
     @Override
-    public Rol saveRol(Rol rol) {
-        return rolRepository.save(rol);
+    public Optional<Rol> findRolByDescriptionIgnoreCase(String description) throws ModelNotFoundException {
+        Optional<Rol> rol = rolRepository.findByDescriptionIgnoreCase(description);
+        if (rol.isEmpty()){
+            throw new ModelNotFoundException("Rol is not available.");
+        }
+        return rol;
     }
 
     @Override
-    public Rol updateRol(int id, Rol rol) {
+    public Rol saveRol(Rol rol) {
+        Rol rolDb = Rol.builder()
+                .description(rol.getDescription())
+                .build();
+        return rolRepository.save(rolDb);
+    }
+
+    @Override
+    public Rol updateRol(Long id, Rol rol) {
         Rol rolDb = rolRepository.findById(id).get();
-        if (Objects.nonNull(rol.getIdRol()) && !"".equalsIgnoreCase(rol.getIdRol())){
-            rolDb.setIdRol(rol.getIdRol());
-        }
         if (Objects.nonNull(rol.getDescription()) && !"".equalsIgnoreCase(rol.getDescription())){
             rolDb.setDescription(rol.getDescription());
         }
@@ -50,7 +60,7 @@ public class RolServiceImpl implements RolService {
     }
 
     @Override
-    public void deleteRol(int id) {
+    public void deleteRol(Long id) {
         rolRepository.deleteById(id);
     }
 }

@@ -4,13 +4,15 @@ import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.errors.ModelNotFoundE
 import com.Papeleriayvariedadshalom.app.PapeleriayVariedad.models.Rol;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RolService {
 
     List<Rol> findAllRoles();
-    Rol findRolById(int id) throws ModelNotFoundException;
+    Rol findRolById(Long id) throws ModelNotFoundException;
+    Optional<Rol> findRolByDescriptionIgnoreCase(String description) throws ModelNotFoundException;
     Rol saveRol(Rol rol);
-    Rol updateRol(int id, Rol rol);
-    void deleteRol(int id);
+    Rol updateRol(Long id, Rol rol);
+    void deleteRol(Long id);
 
 }

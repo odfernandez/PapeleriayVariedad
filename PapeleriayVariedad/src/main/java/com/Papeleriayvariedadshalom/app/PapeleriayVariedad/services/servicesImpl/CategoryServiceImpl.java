@@ -25,15 +25,37 @@ public class CategoryServiceImpl implements CategoryService {
     @Override
     public Category findCategoryById(Long id) throws ModelNotFoundException {
         Optional<Category> category = categoryRepository.findById(id);
-        if (!category.isPresent()){
-            throw new ModelNotFoundException("Category is not available");
+        if (category.isEmpty()){
+            throw new ModelNotFoundException("Category is not available.");
         }
         return category.get();
     }
 
     @Override
-    public Optional<Category> findCategoryByNameWithJPQL(String description) {
-        return categoryRepository.findCategoryByNameWithJPQL(description);
+    public Optional<Category> findCategoryByNameWithJPQL(String description) throws ModelNotFoundException {
+        Optional<Category> category = categoryRepository.findCategoryByNameWithJPQL(description);
+        if (category.isEmpty()){
+            throw new ModelNotFoundException("Verify your Category Name or Category is not available.");
+        }
+        return category;
+    }
+
+    @Override
+    public Optional<Category> findByDescription(String description) throws ModelNotFoundException {
+        Optional<Category> category = categoryRepository.findByDescription(description);
+        if (category.isEmpty()){
+            throw new ModelNotFoundException("Verify your Category Name or Category is not available.");
+        }
+        return category;
+    }
+
+    @Override
+    public Optional<Category> findByDescriptionIgnoreCase(String description) throws ModelNotFoundException {
+        Optional<Category> category = categoryRepository.findByDescriptionIgnoreCase(description);
+        if (category.isEmpty()){
+            throw new ModelNotFoundException("Category is not available.");
+        }
+        return category;
     }
 
     @Override
@@ -42,14 +64,15 @@ public class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
-    public Category updateCategory(Long id, Category category) {
-        Category categoryDb = categoryRepository.findById(id).get();
+    public Category updateCategory(Long id, Category category) throws ModelNotFoundException {
+       Category categoryDb = categoryRepository.findById(id)
+                .orElseThrow(() -> new ModelNotFoundException("Category with ID: " + id + " is not available."));
        if (Objects.nonNull(category.getDescription())&& !"".equalsIgnoreCase(category.getDescription())){
             categoryDb.setDescription(category.getDescription());
-        }
+       }
        categoryDb.setState(category.isState());
 
-        return categoryRepository.save(categoryDb);
+       return categoryRepository.save(categoryDb);
     }
 
     @Override

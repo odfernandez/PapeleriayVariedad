@@ -10,6 +10,6 @@ public interface CustomerService {
     List<Customer> findAllCustomers();
     Customer findCustomerById(String id) throws ModelNotFoundException;
     Customer saveCustomer(Customer customer);
-    Customer updateCustomer(String id, Customer customer);
-    void deleteCustomer(String id);
+    Customer updateCustomer(String id, Customer customer) throws ModelNotFoundException;
+    void deleteCustomer(String id) throws ModelNotFoundException;
 }
